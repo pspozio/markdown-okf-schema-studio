@@ -242,6 +242,8 @@ export function installTocColumn(
         if (element.parentElement?.closest?.("li") || element.closest?.(LIST_ITEM_EXCLUDED)) continue;
         text = listItemText(element);
         if (!/[\p{L}\p{N}]/u.test(text)) continue;
+        // Fork only: a MarkSpec entry titled "-" (`- [ID] -`) has no wording to show.
+        if (!/[\p{L}\p{N}]/u.test(text.replace(/^\[[^\]]*\]\s*/u, ""))) continue;
         level = headingLevel + 1;
         listItem = true;
       } else {

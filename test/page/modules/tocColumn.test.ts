@@ -744,3 +744,16 @@ test("at a list item, the TOC marks the item and the rail marks the tick of its 
   assert.deepEqual(entries().map((entry) => entry.getAttribute("aria-current")), [null, "location", null]);
   assert.deepEqual(ticks().map((tick) => tick.hasAttribute("data-sphinx-preview-toc-tick-current")), [true, false]);
 });
+
+// @tests_req SwRS-MDOKFSTUDIO-TOOLBAR-138
+test("fork only: an item whose first line is an ID in brackets then no wording is not listed", () => {
+  const { content, toc, flush, entries } = setup({ toc: true, listItemsInToc: true });
+  content.appendChild(heading("h1", "Top"));
+  const list = new FakeElement("ul");
+  list.appendChild(listItem("[30009969] -"));
+  list.appendChild(listItem("[SRS_0001] Brake on demand"));
+  content.appendChild(list);
+  toc.refresh();
+  flush();
+  assert.deepEqual(entries().map((entry) => entry.textContent), ["Top", "[SRS_0001] Brake on demand"]);
+});
